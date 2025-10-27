@@ -3,7 +3,7 @@ import { Enemy } from '../entities/Enemy';
 
 export class EnemySpawner {
   private scene: Phaser.Scene;
-  private enemies: Phaser.GameObjects.Group;
+  private enemies: Phaser.Physics.Arcade.Group;
   private target: Phaser.Physics.Arcade.Sprite;
   private spawnTimer!: Phaser.Time.TimerEvent;
   private difficultyTimer!: Phaser.Time.TimerEvent;
@@ -12,7 +12,7 @@ export class EnemySpawner {
 
   constructor(
     scene: Phaser.Scene,
-    enemies: Phaser.GameObjects.Group,
+    enemies: Phaser.Physics.Arcade.Group,
     target: Phaser.Physics.Arcade.Sprite
   ) {
     this.scene = scene;

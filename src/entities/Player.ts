@@ -14,7 +14,7 @@ export interface PlayerStats {
 export class Player extends Phaser.Physics.Arcade.Sprite {
   private stats: PlayerStats;
   private projectiles!: Phaser.Physics.Arcade.Group;
-  private enemies!: Phaser.GameObjects.Group;
+  private enemies!: Phaser.Physics.Arcade.Group;
   private lastAttackTime: number = 0;
   private scene: Phaser.Scene;
   private attackRange: number = 400;
@@ -45,7 +45,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     this.projectiles = group;
   }
 
-  setEnemyGroup(group: Phaser.GameObjects.Group) {
+  setEnemyGroup(group: Phaser.Physics.Arcade.Group) {
     this.enemies = group;
   }
 
@@ -132,6 +132,11 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     projectile.setVisible(true);
     projectile.setData('damage', this.stats.attackDamage);
 
+    if (projectile.body) {
+      projectile.body.enable = true;
+      (projectile.body as Phaser.Physics.Arcade.Body).setSize(8, 8);
+    }
+
     const angle = Phaser.Math.Angle.Between(this.x, this.y, targetX, targetY);
     const velocity = 400;
 
@@ -144,6 +149,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
       if (projectile.active) {
         projectile.setActive(false);
         projectile.setVisible(false);
+        projectile.body.enable = false;
       }
     });
   }

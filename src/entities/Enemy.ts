@@ -31,6 +31,11 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
     this.setData('isEnemy', true);
     this.setCollideWorldBounds(true);
     this.setDepth(5);
+
+    // Set collision body size
+    if (this.body) {
+      this.body.setSize(20, 20);
+    }
   }
 
   update() {

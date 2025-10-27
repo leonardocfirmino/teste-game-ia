@@ -8,8 +8,8 @@ import { GameHUD } from '../ui/GameHUD';
 
 export class GameScene extends Phaser.Scene {
   private player!: Player;
-  private enemies!: Phaser.GameObjects.Group;
-  private xpGems!: Phaser.GameObjects.Group;
+  private enemies!: Phaser.Physics.Arcade.Group;
+  private xpGems!: Phaser.Physics.Arcade.Group;
   private projectiles!: Phaser.Physics.Arcade.Group;
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
 
@@ -30,11 +30,11 @@ export class GameScene extends Phaser.Scene {
     this.cameras.main.setBackgroundColor('#1a1a2e');
 
     // Create groups
-    this.enemies = this.add.group({
+    this.enemies = this.physics.add.group({
       runChildUpdate: true
     });
 
-    this.xpGems = this.add.group({
+    this.xpGems = this.physics.add.group({
       runChildUpdate: true
     });
 
@@ -139,34 +139,51 @@ export class GameScene extends Phaser.Scene {
     this.physics.add.overlap(
       this.projectiles,
       this.enemies,
-      (projectile, enemy) => {
-        if (projectile instanceof Phaser.Physics.Arcade.Sprite && enemy instanceof Enemy) {
-          const damage = projectile.getData('damage') || 10;
-          enemy.takeDamage(damage);
-          projectile.setActive(false);
-          projectile.setVisible(false);
-        }
-      }
+      this.handleProjectileEnemyCollision,
+      undefined,
+      this
     );
 
     // Player collects XP
     this.physics.add.overlap(
       this.player,
       this.xpGems,
-      (player, gem) => {
-        if (gem instanceof XPGem) {
-          const leveledUp = this.player.addXP(gem.getXPValue());
-          gem.destroy();
-
-          if (leveledUp) {
-            this.upgradeUI.show();
-          }
-        }
-      }
+      this.handlePlayerXPCollision,
+      undefined,
+      this
     );
 
     // Enemies touch player (damage handled in Enemy class)
     this.physics.add.overlap(this.player, this.enemies);
+  }
+
+  private handleProjectileEnemyCollision(projectileObj: any, enemyObj: any) {
+    const projectile = projectileObj as Phaser.Physics.Arcade.Sprite;
+    const enemy = enemyObj as Enemy;
+
+    if (!projectile.active || !enemy.active) return;
+
+    const damage = projectile.getData('damage') || 10;
+    enemy.takeDamage(damage);
+
+    projectile.setActive(false);
+    projectile.setVisible(false);
+    if (projectile.body) {
+      projectile.body.enable = false;
+    }
+  }
+
+  private handlePlayerXPCollision(playerObj: any, gemObj: any) {
+    const gem = gemObj as XPGem;
+
+    if (!gem.active) return;
+
+    const leveledUp = this.player.addXP(gem.getXPValue());
+    gem.destroy();
+
+    if (leveledUp) {
+      this.upgradeUI.show();
+    }
   }
 
   private setupEvents() {
