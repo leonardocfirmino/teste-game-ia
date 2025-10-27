@@ -46,6 +46,7 @@ export class GameScene extends Phaser.Scene {
     // Create player
     this.player = new Player(this, 400, 300);
     this.player.setProjectileGroup(this.projectiles);
+    this.player.setEnemyGroup(this.enemies);
 
     // Setup controls
     this.cursors = this.input.keyboard!.createCursorKeys();
@@ -97,7 +98,7 @@ export class GameScene extends Phaser.Scene {
     });
 
     // Update HUD
-    this.hud.update(this.player.getStats(), this.enemies.getLength());
+    this.hud.update(this.player.getStats(), this.enemies.getLength(), this.player.getAttackRange());
   }
 
   private createGraphics() {
@@ -191,6 +192,9 @@ export class GameScene extends Phaser.Scene {
         break;
       case 'attackSpeed':
         this.player.upgradeAttackSpeed();
+        break;
+      case 'range':
+        this.player.upgradeRange();
         break;
     }
   }

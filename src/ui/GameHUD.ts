@@ -100,7 +100,7 @@ export class GameHUD {
     this.container.add(statsText);
   }
 
-  update(stats: PlayerStats, enemyCount: number) {
+  update(stats: PlayerStats, enemyCount: number, attackRange?: number) {
     // Update health bar
     this.healthBar.clear();
     const healthPercent = stats.currentHealth / stats.maxHealth;
@@ -145,7 +145,8 @@ export class GameHUD {
       statsText.setText(
         `Velocidade: ${stats.moveSpeed}\n` +
         `Dano: ${stats.attackDamage}\n` +
-        `Vel. Ataque: ${(1000 / stats.attackSpeed).toFixed(1)}/s`
+        `Vel. Ataque: ${(1000 / stats.attackSpeed).toFixed(1)}/s\n` +
+        `Alcance: ${attackRange || 400}`
       );
     }
   }

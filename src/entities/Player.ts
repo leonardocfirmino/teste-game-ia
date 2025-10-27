@@ -14,8 +14,10 @@ export interface PlayerStats {
 export class Player extends Phaser.Physics.Arcade.Sprite {
   private stats: PlayerStats;
   private projectiles!: Phaser.Physics.Arcade.Group;
+  private enemies!: Phaser.GameObjects.Group;
   private lastAttackTime: number = 0;
   private scene: Phaser.Scene;
+  private attackRange: number = 400;
 
   constructor(scene: Phaser.Scene, x: number, y: number) {
     super(scene, x, y, 'player');
@@ -41,6 +43,10 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
   setProjectileGroup(group: Phaser.Physics.Arcade.Group) {
     this.projectiles = group;
+  }
+
+  setEnemyGroup(group: Phaser.GameObjects.Group) {
+    this.enemies = group;
   }
 
   update(cursors: Phaser.Types.Input.Keyboard.CursorKeys) {
@@ -73,32 +79,46 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
       return;
     }
 
-    const enemies = this.scene.physics.world.colliders
-      .getActive()
-      .map((c: any) => c.object1)
-      .filter((obj: any) => obj && obj.getData && obj.getData('isEnemy'));
+    if (!this.enemies || this.enemies.getLength() === 0) {
+      return;
+    }
 
-    if (enemies.length === 0) return;
-
-    // Find nearest enemy
+    // Find nearest enemy from the enemy group
     let nearestEnemy: any = null;
     let minDistance = Infinity;
 
-    for (const enemy of enemies) {
-      const distance = Phaser.Math.Distance.Between(
-        this.x, this.y,
-        enemy.x, enemy.y
-      );
-      if (distance < minDistance) {
-        minDistance = distance;
-        nearestEnemy = enemy;
+    this.enemies.getChildren().forEach((enemy: any) => {
+      if (enemy.active && enemy.body) {
+        const distance = Phaser.Math.Distance.Between(
+          this.x, this.y,
+          enemy.x, enemy.y
+        );
+        if (distance < minDistance) {
+          minDistance = distance;
+          nearestEnemy = enemy;
+        }
       }
-    }
+    });
 
-    if (nearestEnemy && minDistance < 300) {
+    // Always shoot at nearest enemy within range
+    if (nearestEnemy && minDistance < this.attackRange) {
       this.shootAt(nearestEnemy.x, nearestEnemy.y);
       this.lastAttackTime = currentTime;
+
+      // Visual feedback - show attack line
+      this.showAttackLine(nearestEnemy);
     }
+  }
+
+  private showAttackLine(target: any) {
+    const graphics = this.scene.add.graphics();
+    graphics.lineStyle(2, 0xffff00, 0.5);
+    graphics.lineBetween(this.x, this.y, target.x, target.y);
+    graphics.setDepth(1);
+
+    this.scene.time.delayedCall(100, () => {
+      graphics.destroy();
+    });
   }
 
   private shootAt(targetX: number, targetY: number) {
@@ -175,6 +195,14 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
   upgradeAttackSpeed() {
     this.stats.attackSpeed = Math.max(200, this.stats.attackSpeed - 100);
+  }
+
+  upgradeRange() {
+    this.attackRange += 50;
+  }
+
+  getAttackRange(): number {
+    return this.attackRange;
   }
 
   getStats(): PlayerStats {

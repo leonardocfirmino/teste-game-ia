@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 
-export type UpgradeType = 'speed' | 'damage' | 'attackSpeed';
+export type UpgradeType = 'speed' | 'damage' | 'attackSpeed' | 'range';
 
 export interface UpgradeOption {
   type: UpgradeType;
@@ -33,6 +33,12 @@ export class UpgradeUI {
       name: 'Velocidade de Ataque',
       description: '-100ms entre ataques',
       icon: '🔥'
+    },
+    {
+      type: 'range',
+      name: 'Alcance de Ataque',
+      description: '+50 alcance',
+      icon: '🎯'
     }
   ];
 
