@@ -1,72 +1,100 @@
-# AI Game - Phaser 3 + TypeScript
+# Survivor Game - Phaser 3 + TypeScript
 
-A game engine setup optimized for coding games with AI.
+Um jogo estilo Vampire Survivors com sistema de upgrades, ondas de inimigos e progressão.
 
-## Features
+## Recursos
 
-- **Phaser 3** - Powerful 2D game engine
-- **TypeScript** - Type-safe development
-- **Vite** - Fast build tool and dev server
-- **AI Agent System** - Ready-to-extend AI framework
+- **Phaser 3** - Engine 2D poderosa
+- **TypeScript** - Desenvolvimento type-safe
+- **Vite** - Build tool rápida e dev server
+- **Sistema de Combate Automático** - Ataque automático aos inimigos próximos
+- **Sistema de XP e Níveis** - Progressão através de experiência
+- **Sistema de Upgrades** - Escolha entre 3 power-ups ao upar de nível
+- **Ondas de Inimigos** - Inimigos surgem continuamente nas bordas da tela
+- **Escalada de Dificuldade** - Inimigos ficam mais fortes com o tempo
+- **Timer de 10 Minutos** - Sobreviva até o final para vencer!
 
-## Getting Started
+## Como Jogar
 
-1. Install dependencies:
+1. Instale as dependências:
 ```bash
 npm install
 ```
 
-2. Run the development server:
+2. Execute o servidor de desenvolvimento:
 ```bash
 npm run dev
 ```
 
-3. Build for production:
+3. Build para produção:
 ```bash
 npm run build
 ```
 
-## Game Controls
+## Controles
 
-- **Arrow Keys** - Move the player (green circle)
-- **Objective** - Avoid the AI agent (red circle)
+- **Setas do Teclado** - Mover o jogador (círculo verde)
+- **R** - Reiniciar (após vitória/derrota)
 
-## AI System
+## Mecânicas do Jogo
 
-The game includes a basic AI agent in `src/ai/AIAgent.ts` that:
-- Chases the player when within range
-- Wanders randomly when player is far away
-- Can be easily extended with more complex behaviors
+### Combate
+- O jogador ataca automaticamente o inimigo mais próximo
+- Projéteis amarelos causam dano aos inimigos (círculos vermelhos)
+- Inimigos dropam XP (cristais azuis) ao morrer
 
-## Project Structure
+### Sistema de XP
+- Colete cristais de XP para encher a barra de experiência
+- Ao completar a barra, você sobe de nível
+- XP é atraído magneticamente quando você se aproxima
+
+### Upgrades Disponíveis
+1. **Velocidade de Movimento** - +20 velocidade
+2. **Dano de Ataque** - +5 dano por projétil
+3. **Velocidade de Ataque** - -100ms entre ataques (ataca mais rápido)
+
+### Progressão
+- Inimigos surgem em ondas crescentes
+- A cada 30 segundos, inimigos ficam mais fortes e aparecem em maior quantidade
+- Objetivo: Sobreviver por 10 minutos
+
+## Estrutura do Projeto
 
 ```
 ├── src/
-│   ├── main.ts           # Game initialization
+│   ├── main.ts              # Inicialização do jogo
 │   ├── scenes/
-│   │   └── GameScene.ts  # Main game scene
-│   └── ai/
-│       └── AIAgent.ts    # AI controller
+│   │   └── GameScene.ts     # Cena principal do jogo
+│   ├── entities/
+│   │   ├── Player.ts        # Jogador com combate e stats
+│   │   ├── Enemy.ts         # Inimigo com IA perseguição
+│   │   └── XPGem.ts         # Cristal de XP com efeito magnético
+│   ├── systems/
+│   │   └── EnemySpawner.ts  # Sistema de spawn de ondas
+│   └── ui/
+│       ├── UpgradeUI.ts     # Interface de seleção de upgrades
+│       └── GameHUD.ts       # HUD com HP, XP, timer e stats
 ├── index.html
 ├── package.json
 ├── tsconfig.json
 └── vite.config.ts
 ```
 
-## Extending the AI
+## HUD (Interface)
 
-You can enhance the AI by:
-- Adding pathfinding algorithms (A*, Dijkstra)
-- Implementing state machines
-- Adding neural networks for learning
-- Creating decision trees
-- Implementing flocking behaviors
-- Adding perception systems
+- **Barra de HP** - Verde/Amarelo/Vermelho conforme a saúde
+- **Barra de XP** - Azul, mostra progresso para próximo nível
+- **Level** - Nível atual do jogador
+- **Timer** - Tempo restante (10 minutos)
+- **Contador de Inimigos** - Quantidade de inimigos ativos
+- **Stats** - Velocidade, dano e velocidade de ataque atuais
 
-## Next Steps
+## Próximas Melhorias
 
-- Add more AI agents with different behaviors
-- Implement learning algorithms
-- Add obstacles and pathfinding
-- Create different game modes
-- Add power-ups and collectibles
+- Adicionar mais tipos de inimigos
+- Implementar diferentes tipos de armas
+- Sistema de raridade para upgrades
+- Mais power-ups (área de efeito, projéteis múltiplos, etc)
+- Diferentes mapas e biomas
+- Bosses especiais
+- Sistema de conquistas
