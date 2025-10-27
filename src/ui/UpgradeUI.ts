@@ -18,26 +18,26 @@ export class UpgradeUI {
   private upgradeOptions: UpgradeOption[] = [
     {
       type: 'speed',
-      name: 'Velocidade de Movimento',
-      description: '+20 velocidade',
+      name: 'Super Velocidade',
+      description: '+40 velocidade (FORTE!)',
       icon: '⚡'
     },
     {
       type: 'damage',
-      name: 'Dano de Ataque',
-      description: '+5 dano',
+      name: 'Poder Devastador',
+      description: '+15 dano (BRUTAL!)',
       icon: '⚔️'
     },
     {
       type: 'attackSpeed',
-      name: 'Velocidade de Ataque',
-      description: '-100ms entre ataques',
+      name: 'Rajada Rápida',
+      description: 'Ataque muito mais rápido!',
       icon: '🔥'
     },
     {
       type: 'range',
-      name: 'Alcance de Ataque',
-      description: '+50 alcance',
+      name: 'Alcance Supremo',
+      description: '+100 alcance (DOBRO!)',
       icon: '🎯'
     }
   ];

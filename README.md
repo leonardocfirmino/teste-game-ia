@@ -40,22 +40,33 @@ npm run build
 
 ### Combate
 - O jogador ataca automaticamente o inimigo mais próximo
-- Projéteis amarelos causam dano aos inimigos (círculos vermelhos)
-- Inimigos dropam XP (cristais azuis) ao morrer
+- Projéteis brilhantes com efeitos de impacto
+- Inimigos explodem em partículas ao morrer
+- Efeitos visuais 3D com sombras e profundidade
 
 ### Sistema de XP
 - Colete cristais de XP para encher a barra de experiência
 - Ao completar a barra, você sobe de nível
 - XP é atraído magneticamente quando você se aproxima
+- **Cura completa** ao upar + aumento de vida máxima!
 
-### Upgrades Disponíveis
-1. **Velocidade de Movimento** - +20 velocidade
-2. **Dano de Ataque** - +5 dano por projétil
-3. **Velocidade de Ataque** - -100ms entre ataques (ataca mais rápido)
+### Upgrades Poderosos (FORTE!)
+1. **⚡ Super Velocidade** - +40 velocidade (muito rápido!)
+2. **⚔️ Poder Devastador** - +15 dano por projétil (brutal!)
+3. **🔥 Rajada Rápida** - Ataque muito mais rápido
+4. **🎯 Alcance Supremo** - +100 alcance (dobro!)
+
+### Balanceamento
+- **Player mais forte**: Começa com mais vida (150 HP) e dano (25)
+- **Upgrades muito mais poderosos**: Valores triplicados!
+- **Inimigos mais fracos**: Menos vida e dano
+- **Progressão mais suave**: Dificuldade aumenta mais devagar
+- **Ondas menores no início**: 2 inimigos a cada 3 segundos
 
 ### Progressão
 - Inimigos surgem em ondas crescentes
-- A cada 30 segundos, inimigos ficam mais fortes e aparecem em maior quantidade
+- A cada 45 segundos, inimigos ficam mais fortes
+- Quantidade de inimigos só aumenta após 2 minutos
 - Objetivo: Sobreviver por 10 minutos
 
 ## Estrutura do Projeto

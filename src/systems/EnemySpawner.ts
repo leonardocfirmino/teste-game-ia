@@ -8,7 +8,7 @@ export class EnemySpawner {
   private spawnTimer!: Phaser.Time.TimerEvent;
   private difficultyTimer!: Phaser.Time.TimerEvent;
   private difficultyMultiplier: number = 1;
-  private enemiesPerWave: number = 3;
+  private enemiesPerWave: number = 2;
 
   constructor(
     scene: Phaser.Scene,
@@ -25,19 +25,21 @@ export class EnemySpawner {
 
   private startSpawning() {
     this.spawnTimer = this.scene.time.addEvent({
-      delay: 2000,
+      delay: 3000, // Mais tempo entre ondas
       callback: () => this.spawnWave(),
       loop: true
     });
   }
 
   private startDifficultyScaling() {
-    // Increase difficulty every 30 seconds
+    // Increase difficulty every 45 seconds (mais lento)
     this.difficultyTimer = this.scene.time.addEvent({
-      delay: 30000,
+      delay: 45000,
       callback: () => {
-        this.difficultyMultiplier += 0.3;
-        this.enemiesPerWave += 1;
+        this.difficultyMultiplier += 0.2; // Aumenta mais devagar
+        if (this.scene.time.now > 120000) { // Só aumenta quantidade após 2 min
+          this.enemiesPerWave += 1;
+        }
       },
       loop: true
     });

@@ -18,11 +18,11 @@ export class Enemy extends Phaser.Physics.Arcade.Sprite {
   ) {
     super(scene, x, y, 'enemy');
 
-    this.health = 20 * difficultyMultiplier;
+    this.health = 15 * difficultyMultiplier;
     this.maxHealth = this.health;
-    this.damage = 5 * difficultyMultiplier;
-    this.moveSpeed = 50 + (difficultyMultiplier - 1) * 20;
-    this.xpValue = Math.floor(3 * difficultyMultiplier);
+    this.damage = 3 * difficultyMultiplier;
+    this.moveSpeed = 40 + (difficultyMultiplier - 1) * 15;
+    this.xpValue = Math.floor(5 * difficultyMultiplier);
     this.target = target;
 
     scene.add.existing(this);

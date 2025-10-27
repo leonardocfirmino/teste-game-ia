@@ -102,34 +102,65 @@ export class GameScene extends Phaser.Scene {
   }
 
   private createGraphics() {
-    // Player graphic
+    // Player graphic with 3D effect
     const playerGraphics = this.make.graphics({ x: 0, y: 0, add: false });
+    // Shadow
+    playerGraphics.fillStyle(0x000000, 0.3);
+    playerGraphics.fillEllipse(12, 20, 20, 6);
+    // Body with gradient effect (3 layers for depth)
+    playerGraphics.fillStyle(0x00aa00, 1);
+    playerGraphics.fillCircle(12, 10, 13);
     playerGraphics.fillStyle(0x00ff00, 1);
-    playerGraphics.fillCircle(12, 12, 12);
+    playerGraphics.fillCircle(12, 10, 11);
+    playerGraphics.fillStyle(0x66ff66, 1);
+    playerGraphics.fillCircle(9, 8, 5);
     playerGraphics.generateTexture('player', 24, 24);
     playerGraphics.destroy();
 
-    // Enemy graphic
+    // Enemy graphic with 3D effect
     const enemyGraphics = this.make.graphics({ x: 0, y: 0, add: false });
+    // Shadow
+    enemyGraphics.fillStyle(0x000000, 0.3);
+    enemyGraphics.fillEllipse(10, 17, 16, 5);
+    // Body with layers
+    enemyGraphics.fillStyle(0xaa0000, 1);
+    enemyGraphics.fillCircle(10, 8, 11);
     enemyGraphics.fillStyle(0xff0000, 1);
-    enemyGraphics.fillCircle(10, 10, 10);
+    enemyGraphics.fillCircle(10, 8, 9);
+    enemyGraphics.fillStyle(0xff6666, 1);
+    enemyGraphics.fillCircle(7, 6, 4);
     enemyGraphics.generateTexture('enemy', 20, 20);
     enemyGraphics.destroy();
 
-    // Projectile graphic
+    // Projectile graphic with glow
     const projectileGraphics = this.make.graphics({ x: 0, y: 0, add: false });
+    projectileGraphics.fillStyle(0xffaa00, 0.6);
+    projectileGraphics.fillCircle(4, 4, 6);
     projectileGraphics.fillStyle(0xffff00, 1);
     projectileGraphics.fillCircle(4, 4, 4);
+    projectileGraphics.fillStyle(0xffff99, 1);
+    projectileGraphics.fillCircle(4, 4, 2);
     projectileGraphics.generateTexture('projectile', 8, 8);
     projectileGraphics.destroy();
 
-    // XP Gem graphic
+    // XP Gem graphic with 3D diamond shape
     const xpGraphics = this.make.graphics({ x: 0, y: 0, add: false });
+    // Shadow
+    xpGraphics.fillStyle(0x000000, 0.3);
+    xpGraphics.fillEllipse(8, 14, 12, 4);
+    // Gem layers for 3D effect
+    xpGraphics.fillStyle(0x0088cc, 1);
+    xpGraphics.fillRect(2, 6, 12, 8);
     xpGraphics.fillStyle(0x00bfff, 1);
-    xpGraphics.fillRect(0, 4, 8, 8);
-    xpGraphics.fillRect(4, 0, 8, 8);
-    xpGraphics.fillRect(4, 8, 8, 8);
-    xpGraphics.fillRect(8, 4, 8, 8);
+    xpGraphics.beginPath();
+    xpGraphics.moveTo(8, 2);
+    xpGraphics.lineTo(14, 8);
+    xpGraphics.lineTo(8, 12);
+    xpGraphics.lineTo(2, 8);
+    xpGraphics.closePath();
+    xpGraphics.fillPath();
+    xpGraphics.fillStyle(0x66ddff, 1);
+    xpGraphics.fillRect(4, 7, 8, 4);
     xpGraphics.generateTexture('xpGem', 16, 16);
     xpGraphics.destroy();
   }
@@ -166,10 +197,34 @@ export class GameScene extends Phaser.Scene {
     const damage = projectile.getData('damage') || 10;
     enemy.takeDamage(damage);
 
+    // Impact particles
+    this.createImpactEffect(projectile.x, projectile.y);
+
     projectile.setActive(false);
     projectile.setVisible(false);
     if (projectile.body) {
       projectile.body.enable = false;
+    }
+  }
+
+  private createImpactEffect(x: number, y: number) {
+    // Create impact particles
+    for (let i = 0; i < 8; i++) {
+      const angle = (i / 8) * Math.PI * 2;
+      const speed = 100 + Math.random() * 50;
+      const particle = this.add.circle(x, y, 2, 0xffff00);
+      particle.setDepth(20);
+
+      this.tweens.add({
+        targets: particle,
+        x: x + Math.cos(angle) * 20,
+        y: y + Math.sin(angle) * 20,
+        alpha: 0,
+        scale: 0,
+        duration: 300,
+        ease: 'Power2',
+        onComplete: () => particle.destroy()
+      });
     }
   }
 
@@ -189,6 +244,10 @@ export class GameScene extends Phaser.Scene {
   private setupEvents() {
     // When enemy is killed, drop XP
     this.events.on('enemyKilled', (data: { x: number; y: number; xpValue: number }) => {
+      // Death explosion effect
+      this.createDeathExplosion(data.x, data.y);
+
+      // Drop XP gem
       const gem = new XPGem(this, data.x, data.y, data.xpValue);
       this.xpGems.add(gem);
     });
@@ -196,6 +255,40 @@ export class GameScene extends Phaser.Scene {
     // When time is up, show victory
     this.events.on('timeUp', () => {
       this.showVictory();
+    });
+  }
+
+  private createDeathExplosion(x: number, y: number) {
+    // Create explosion particles
+    for (let i = 0; i < 12; i++) {
+      const angle = (i / 12) * Math.PI * 2;
+      const distance = 20 + Math.random() * 30;
+      const size = 3 + Math.random() * 4;
+      const particle = this.add.circle(x, y, size, 0xff0000);
+      particle.setDepth(20);
+
+      this.tweens.add({
+        targets: particle,
+        x: x + Math.cos(angle) * distance,
+        y: y + Math.sin(angle) * distance,
+        alpha: 0,
+        scale: 0,
+        duration: 400 + Math.random() * 200,
+        ease: 'Power2',
+        onComplete: () => particle.destroy()
+      });
+    }
+
+    // Flash effect
+    const flash = this.add.circle(x, y, 15, 0xffffff, 0.8);
+    flash.setDepth(19);
+    this.tweens.add({
+      targets: flash,
+      scale: 2,
+      alpha: 0,
+      duration: 200,
+      ease: 'Power2',
+      onComplete: () => flash.destroy()
     });
   }
 

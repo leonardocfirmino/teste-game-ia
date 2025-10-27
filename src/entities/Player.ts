@@ -24,14 +24,14 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     this.scene = scene;
 
     this.stats = {
-      maxHealth: 100,
-      currentHealth: 100,
-      moveSpeed: 150,
-      attackDamage: 10,
-      attackSpeed: 1000, // ms between attacks
+      maxHealth: 150,
+      currentHealth: 150,
+      moveSpeed: 180,
+      attackDamage: 25,
+      attackSpeed: 800, // ms between attacks
       level: 1,
       currentXP: 0,
-      xpToNextLevel: 10
+      xpToNextLevel: 8
     };
 
     scene.add.existing(this);
@@ -182,29 +182,27 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   private levelUp() {
     this.stats.level++;
     this.stats.currentXP -= this.stats.xpToNextLevel;
-    this.stats.xpToNextLevel = Math.floor(this.stats.xpToNextLevel * 1.5);
+    this.stats.xpToNextLevel = Math.floor(this.stats.xpToNextLevel * 1.3);
 
-    // Heal on level up
-    this.stats.currentHealth = Math.min(
-      this.stats.currentHealth + 20,
-      this.stats.maxHealth
-    );
+    // Full heal on level up!
+    this.stats.maxHealth += 10;
+    this.stats.currentHealth = this.stats.maxHealth;
   }
 
   upgradeSpeed() {
-    this.stats.moveSpeed += 20;
+    this.stats.moveSpeed += 40; // Muito mais rápido!
   }
 
   upgradeDamage() {
-    this.stats.attackDamage += 5;
+    this.stats.attackDamage += 15; // 3x mais dano!
   }
 
   upgradeAttackSpeed() {
-    this.stats.attackSpeed = Math.max(200, this.stats.attackSpeed - 100);
+    this.stats.attackSpeed = Math.max(150, this.stats.attackSpeed - 150); // Ataque muito mais rápido!
   }
 
   upgradeRange() {
-    this.attackRange += 50;
+    this.attackRange += 100; // Dobro do alcance!
   }
 
   getAttackRange(): number {
